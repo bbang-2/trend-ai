@@ -20,6 +20,12 @@ public class CrawledData {
     @Column(nullable = false)
     private String keyword;
 
+    @Column(nullable = false)
+    private String title;
+
+    @Column(length = 2000)
+    private String summary;
+
     @Lob
     private String content;
 

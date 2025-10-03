@@ -14,12 +14,18 @@ public class AIResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String keyword;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "crawled_id", nullable = false, unique = true)
+    private CrawledData article;
 
     @Lob
-    private String extractedKeywords;
-
-    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String summary;
+
+    @Column(length = 20)
+    private String sentiment;
+
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    private String keywordsJson;
 }
