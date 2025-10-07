@@ -8,6 +8,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class CrawledDataResponseDto {
+    private long id;
     private String source;
     private String keyword;
     private String title;

@@ -11,6 +11,7 @@ import java.util.List;
 @Builder
 public class AiResultResponseDto {
     private Long articleId;
+    private String title;
     private String summary;
     private String sentiment;
     private List<String> keywords;

@@ -19,8 +19,10 @@ import trend_ai_backend.service.TrendReportService;
 public class TrendReportController {
     private final TrendReportService trendReportService;
 
+    private final String REPORT_API = "/report";
+
     @Operation(summary = "트랜드 리포트 생성", description = "입력한 키워드로 관련 기사를 조회하고 AI 분석을 수행하여 긍정/부정/중립 비율과 상위 키워드를 포함한 트랜드 리포트 반환")
-    @GetMapping("/report")
+    @GetMapping(REPORT_API)
     public ResponseEntity<ResponseDto<TrendReportResponseDto>> generateReport(
             @RequestParam String keyword
     ) {

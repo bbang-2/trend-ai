@@ -20,6 +20,7 @@ import trend_ai_backend.repository.CrawledDataRepository;
 import trend_ai_backend.service.AiResultService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -43,7 +44,7 @@ public class AiResultServiceImpl implements AiResultService {
             content = article.getSummary();
         }
 
-        String url = "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-pro:generateContent?key=" + apiKey;
+        String url = "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash-lite:generateContent?key=" + apiKey;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -94,17 +95,34 @@ public class AiResultServiceImpl implements AiResultService {
 
             JsonNode jsonNode = mapper.readTree(cleaned);
 
-            AIResult aiResult = AIResult.builder()
-                    .article(article)
-                    .summary(jsonNode.get("summary").asText())
-                    .sentiment(jsonNode.get("sentiment").asText())
-                    .keywordsJson(jsonNode.get("keywords").toString())
-                    .build();
+            Optional<AIResult> existingOpt = aiResultRepository.findByArticleId(article.getId());
 
-            AIResult saved = aiResultRepository.save(aiResult);
+            AIResult aiResult;
+
+            if (existingOpt.isPresent()) {
+                AIResult existing = existingOpt.get();
+
+                aiResult = AIResult.builder()
+                        .id(existing.getId())
+                        .article(article)
+                        .summary(jsonNode.get("summary").asText())
+                        .sentiment(jsonNode.get("sentiment").asText())
+                        .keywordsJson(jsonNode.get("keywords").toString())
+                        .build();
+            } else {
+                aiResult = AIResult.builder()
+                        .article(article)
+                        .summary(jsonNode.get("summary").asText())
+                        .sentiment(jsonNode.get("sentiment").asText())
+                        .keywordsJson(jsonNode.get("keywords").toString())
+                        .build();
+            }
+
+            AIResult saved = aiResultRepository.saveAndFlush(aiResult);
 
             AiResultResponseDto dto = AiResultResponseDto.builder()
                     .articleId(articleId)
+                    .title(article.getTitle())
                     .summary(saved.getSummary())
                     .sentiment(saved.getSentiment())
                     .keywords(mapper.convertValue(jsonNode.get("keywords"), List.class))
