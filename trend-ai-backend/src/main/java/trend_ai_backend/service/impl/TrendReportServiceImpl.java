@@ -39,14 +39,24 @@ public class TrendReportServiceImpl implements TrendReportService {
         }
 
         List<AIResult> results = new ArrayList<>();
+
         for (CrawledData article : articles) {
-            Optional<AIResult> existing = aiResultRepository.findByArticle(article);
-            if (existing.isPresent()) {
-                results.add(existing.get());
-            } else {
+            try {
+                Optional<AIResult> existingOpt = aiResultRepository.findByArticle(article);
+                if (existingOpt.isPresent()) {
+                    results.add(existingOpt.get());
+                    continue;
+                }
+
                 AiResultResponseDto dto = aiResultService.analyze(article.getId()).getData();
-                AIResult newResult = aiResultRepository.findByArticle(article).orElseThrow();
-                results.add(newResult);
+
+                AIResult saved = aiResultRepository.findFirstByArticle(article).orElse(null);
+                if (saved != null) {
+                    results.add(saved);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 

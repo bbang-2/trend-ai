@@ -12,4 +12,6 @@ public interface AiResultRepository extends JpaRepository<AIResult, Long> {
     Optional<AIResult> findByArticleId(Long articleId);
 
     Optional<AIResult> findByArticle(CrawledData article);
+
+    Optional<AIResult> findFirstByArticle(CrawledData article);
 }

@@ -19,8 +19,10 @@ import trend_ai_backend.service.AiResultService;
 public class AiResultController {
     private final AiResultService AiResultService;
 
+    private final String ARTICLE_API = "/{articleId}";
+
     @Operation(summary = "AI 기사 분석", description = "기사 ID로 본문 불러와서 Gemini로 요약/감정/키워드 분석")
-    @PostMapping("/{articleId}")
+    @PostMapping(ARTICLE_API)
     public ResponseEntity<ResponseDto<AiResultResponseDto>> analyze(
             @PathVariable Long articleId
     ) {

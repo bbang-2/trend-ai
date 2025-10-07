@@ -22,8 +22,10 @@ import java.util.List;
 public class SearchController {
     private final SearchService searchService;
 
+    private final String NEWS_API = "/news";
+
     @Operation(summary = "네이버 뉴스 API", description = "네이버 뉴스 API를 통해 기사 가져오기")
-    @GetMapping("/news")
+    @GetMapping(NEWS_API)
     public ResponseEntity<ResponseDto<List<CrawledDataResponseDto>>> crawlNews(
             @RequestParam @NotBlank String keyword
     ) {

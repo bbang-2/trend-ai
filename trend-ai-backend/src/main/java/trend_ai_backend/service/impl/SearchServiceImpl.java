@@ -77,6 +77,7 @@ public class SearchServiceImpl implements SearchService {
                 crawledDataRepository.save(article);
 
                 data.add(CrawledDataResponseDto.builder()
+                        .id(article.getId())
                         .source(article.getSource())
                         .keyword(keyword)
                         .title(article.getTitle())
